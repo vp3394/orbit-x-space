@@ -1,330 +1,484 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#050711">
-<meta name="description" content="ORBIT X — Explore the solar system, discover NASA astronomy pictures, and track the International Space Station.">
+<meta name="description" content="ORBIT X — an interactive journey through planets, space missions, and the future of exploration.">
 <title>ORBIT X — Beyond the Known</title>
 <style>
-:root{--bg:#050711;--panel:#10162a;--text:#f4f7ff;--muted:#a5b2d1;--cyan:#63e9ff;--purple:#a68cff;--line:#293452}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:85px}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif;line-height:1.65;overflow-x:hidden}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 15% 10%,#172654 0,transparent 35%),radial-gradient(ellipse at 85% 45%,#281342 0,transparent 32%),#050711}
+:root{--bg:#050711;--panel:rgba(13,20,43,.72);--line:rgba(139,174,255,.18);--text:#f4f7ff;--muted:#a8b5d2;--cyan:#76e7ff;--blue:#6888ff;--purple:#ba8cff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse at 15% 10%,#152451 0,transparent 34%),radial-gradient(ellipse at 85% 40%,#21113d 0,transparent 32%),#050711}
+#starfield{position:fixed;inset:0;width:100%;height:100%;z-index:-2;pointer-events:none}
 a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer}
-header{position:sticky;top:0;z-index:10;background:#050711db;backdrop-filter:blur(16px);border-bottom:1px solid #ffffff14}
-.nav{max-width:1180px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.logo{font-size:1.25rem;font-weight:900;letter-spacing:3px;color:var(--cyan)}
-.logo span{color:white}
-nav{display:flex;gap:20px;flex-wrap:wrap;font-size:.9rem;color:var(--muted)}
-nav a:hover{color:var(--cyan)}
-.wrap{width:min(1120px,92%);margin:auto}
-.hero{min-height:620px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:24px;padding:65px 0}
-.eyebrow{color:var(--cyan);letter-spacing:3px;text-transform:uppercase;font-size:.78rem;font-weight:800}
-h1{font-size:clamp(3rem,7vw,6.4rem);line-height:.98;letter-spacing:-4px;margin:20px 0}
-h1 span{background:linear-gradient(90deg,var(--cyan),var(--purple));color:transparent;background-clip:text}
-.lead{color:var(--muted);max-width:570px;font-size:1.08rem}
-.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-.btn{display:inline-flex;justify-content:center;align-items:center;padding:12px 19px;border-radius:12px;border:1px solid var(--line);background:#111a30;color:white;font-weight:750}
-.btn.primary{background:linear-gradient(100deg,#35cfe9,#9280ff);color:#07101c;border:0}
-.btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
-.hero-art{min-height:400px;display:grid;place-items:center;position:relative;overflow:hidden}
-.nebula{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,#4539a755,#1f91bb20 40%,transparent 70%);filter:blur(12px)}
-.planet-big{width:205px;height:205px;border-radius:50%;position:relative;background:radial-gradient(circle at 30% 25%,#e4d7ff,#8b74d8 25%,#453c92 55%,#161c4d 78%);box-shadow:inset -25px -15px 45px #050711,0 0 55px #8471ff66;animation:float 5s ease-in-out infinite}
-.planet-big:after{content:"";position:absolute;left:-38px;top:79px;width:280px;height:58px;border:9px solid #9ceaff88;border-left-color:#b4a2ff;border-right-color:#4cd5ed;border-radius:50%;transform:rotate(-20deg);box-shadow:0 0 22px #5ce8ff55}
-@keyframes float{50%{transform:translateY(-15px)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes twinkle{50%{opacity:.3;transform:scale(.65)}}
-.star{position:fixed;width:2px;height:2px;border-radius:50%;background:white;pointer-events:none;z-index:-1;animation:twinkle 3s infinite alternate}
-section{padding:72px 0}
-.section-head{margin-bottom:28px}
-h2{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-1px;line-height:1.15;margin:8px 0}
-.sub{color:var(--muted);max-width:680px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.card{border:1px solid #ffffff16;background:linear-gradient(145deg,#121a30eF,#0b1020f5);border-radius:19px;padding:22px;min-width:0;transition:.2s}
-.card:hover{border-color:#63e9ff77;transform:translateY(-3px)}
-.planet-icon{font-size:2.5rem;display:block;margin-bottom:8px}
-.card h3{margin:5px 0 8px;font-size:1.18rem}
-.card p{color:var(--muted);font-size:.94rem}
-.tag{display:inline-block;border:1px solid #63e9ff44;border-radius:99px;padding:3px 9px;color:var(--cyan);font-size:.75rem}
-.solar-panel{border:1px solid #ffffff19;border-radius:24px;padding:22px;background:radial-gradient(ellipse at center,#121d39,#070b17 72%);overflow:hidden}
-.solar-system{height:360px;position:relative;display:grid;place-items:center;overflow:hidden}
-.sun{width:43px;height:43px;border-radius:50%;background:radial-gradient(circle,#fff6b1,#ffab35 55%,#ff5a27);box-shadow:0 0 25px #ff9b3d,0 0 70px #ff9b3d55;z-index:2}
-.orbit{position:absolute;border:1px solid #9baed333;border-radius:50%;animation:spin linear infinite}
-.orbit .orbital-body{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);border-radius:50%}
-.o1{width:85px;height:85px;animation-duration:8s}.o1 .orbital-body{width:7px;height:7px;background:#c6c8d6}
-.o2{width:125px;height:125px;animation-duration:12s}.o2 .orbital-body{width:11px;height:11px;background:#e5b76a}
-.o3{width:175px;height:175px;animation-duration:17s}.o3 .orbital-body{width:13px;height:13px;background:#43aaff;box-shadow:0 0 12px #43aaff}
-.o4{width:225px;height:225px;animation-duration:23s}.o4 .orbital-body{width:10px;height:10px;background:#e47754}
-.o5{width:290px;height:290px;animation-duration:34s}.o5 .orbital-body{width:27px;height:27px;background:#e5c38a}
-.o6{width:350px;height:350px;animation-duration:44s}.o6 .orbital-body{width:22px;height:22px;background:#b9e6e8}
-.planet-buttons{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
-.planet-buttons button{border:1px solid var(--line);background:#10182c;color:white;padding:8px 12px;border-radius:10px}
-.planet-buttons button.active,.planet-buttons button:hover{border-color:var(--cyan);color:var(--cyan)}
-.info-box{border-radius:15px;background:#070d1c;border:1px solid #ffffff16;padding:18px;min-height:120px}
-.stat{font-size:clamp(1.5rem,3vw,2.3rem);font-weight:850;color:var(--cyan);overflow-wrap:anywhere}
-.small{font-size:.85rem;color:var(--muted)}
-.live-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.apod-image{width:100%;max-height:300px;object-fit:cover;border-radius:13px;background:#080c18;margin-top:12px}
-.quiz-options{display:grid;gap:9px;margin:18px 0}
-.quiz-options button{text-align:left;border:1px solid var(--line);background:#0a1021;color:white;border-radius:11px;padding:12px}
-.quiz-options button:hover{border-color:var(--cyan)}
-#quizFeedback{color:var(--cyan);min-height:28px}
-footer{border-top:1px solid #ffffff18;padding:30px 0;color:var(--muted);text-align:center;font-size:.9rem}
-footer a{color:var(--cyan)}
-@media(max-width:760px){.hero{grid-template-columns:1fr;padding:52px 0 20px}.hero-art{min-height:300px}.planet-big{width:155px;height:155px}.planet-big:after{top:57px;width:225px;left:-35px;height:48px}.grid{grid-template-columns:1fr 1fr}.live-grid{grid-template-columns:1fr}nav{gap:10px;font-size:.8rem}.nav{align-items:flex-start}.solar-system{transform:scale(.9);margin:-15px 0}.o6{width:320px;height:320px}}
-@media(max-width:480px){.grid{grid-template-columns:1fr}h1{letter-spacing:-2px}.nav{flex-direction:column;gap:8px}.hero{min-height:unset}.solar-system{transform:scale(.8);margin:-30px -20px}.card{padding:18px}}
+button,input{font:inherit}
+button{color:inherit}
+.wrap{width:min(1160px,90%);margin:auto}
+header{height:76px;position:sticky;top:0;z-index:20;background:rgba(5,7,17,.78);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.18em;font-size:1.05rem}
+.brand-mark{width:34px;height:34px;display:grid;place-items:center;border:1px solid #70dfff;border-radius:11px;color:var(--cyan);box-shadow:0 0 22px #3e9dff2b;font-size:19px}
+.navlinks{display:flex;gap:25px;align-items:center}
+.navlinks a{font-size:.87rem;color:#bdc9e3;transition:color .2s}
+.navlinks a:hover{color:var(--cyan)}
+.nav-cta,.btn{border:1px solid #7a9dff55;background:linear-gradient(110deg,#387df4,#7757df);padding:11px 17px;border-radius:12px;font-weight:750;font-size:.88rem;cursor:pointer;box-shadow:0 8px 28px #3d63ed24;transition:transform .2s,filter .2s}
+.nav-cta:hover,.btn:hover{transform:translateY(-2px);filter:brightness(1.15)}
+.menu-toggle{display:none;background:transparent;border:1px solid var(--line);padding:8px 11px;border-radius:10px}
+.hero{min-height:660px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:30px;padding:76px 0 80px;position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--cyan);font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.pulse{width:7px;height:7px;border-radius:50%;background:#6bffcb;box-shadow:0 0 13px #6bffcb}
+h1{font-size:clamp(3.25rem,7.3vw,6.6rem);line-height:.98;letter-spacing:-.075em;margin:23px 0}
+.grad{background:linear-gradient(100deg,#f8fbff 4%,#87eaff 40%,#a999ff 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-copy{max-width:570px;color:var(--muted);font-size:1.05rem;line-height:1.85}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:29px}
+.btn.secondary{background:rgba(255,255,255,.035);box-shadow:none;border-color:#8da5d94d}
+.hero-meta{display:flex;gap:24px;margin-top:36px;flex-wrap:wrap}
+.meta strong{display:block;font-size:1.2rem;letter-spacing:-.03em}
+.meta span{color:#8798b9;font-size:.76rem}
+.visual{height:480px;position:relative;display:grid;place-items:center;isolation:isolate}
+.orbit{position:absolute;border:1px solid #92a9ff2a;border-radius:50%;transform:rotate(-22deg)}
+.orbit.one{width:390px;height:170px}.orbit.two{width:470px;height:220px;transform:rotate(48deg)}.orbit.three{width:330px;height:330px;transform:rotate(15deg)}
+.planet-main{width:230px;height:230px;border-radius:50%;position:relative;background:radial-gradient(circle at 29% 23%,#a8d9ff 0,#5b7be5 13%,#3738a0 38%,#17133f 67%,#070b1b 80%);box-shadow:inset -35px -24px 55px #02040f, inset 12px 8px 24px #b4dfff8c,0 0 65px #647cff55,0 0 150px #4c56d02a;animation:float 6s ease-in-out infinite}
+.planet-main:before{content:"";position:absolute;inset:15% -13%;border:8px solid #9edaff9c;border-top-color:#d2c8ffb0;border-bottom-color:#5364d34d;border-radius:50%;transform:rotate(-24deg);box-shadow:0 0 17px #8ce5ff3b}
+.planet-main:after{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-linear-gradient(165deg,transparent 0 20px,#a8d7ff0d 21px 23px,transparent 24px 38px);mix-blend-mode:screen}
+.mini-planet{position:absolute;border-radius:50%;box-shadow:inset -12px -9px 18px #0008,0 0 28px #a27aff36}
+.mini-planet.mars{width:49px;height:49px;right:9%;top:21%;background:radial-gradient(circle at 30% 25%,#ffc49a,#d65a46 52%,#57203c)}
+.mini-planet.moon{width:28px;height:28px;left:10%;bottom:22%;background:radial-gradient(circle at 30% 25%,#fff,#7e8aab 70%,#30344e)}
+.float-card{position:absolute;padding:13px 16px;border:1px solid #a0b7ff35;background:#0b1229c9;backdrop-filter:blur(14px);border-radius:15px;box-shadow:0 12px 45px #0003}
+.float-card small{display:block;color:#96a8cb;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
+.float-card strong{font-size:.95rem}
+.card-top{top:12%;left:0}.card-bottom{bottom:10%;right:0}
+.section{padding:90px 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:30px}
+.kicker{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);font-weight:800}
+h2{font-size:clamp(2rem,4vw,3.4rem);line-height:1.12;letter-spacing:-.05em;margin-top:10px}
+.section-head p{max-width:420px;color:var(--muted);font-size:.93rem}
+.glass{background:linear-gradient(145deg,rgba(20,31,62,.8),rgba(9,13,29,.75));border:1px solid var(--line);box-shadow:inset 0 1px #ffffff08,0 18px 50px #00000016}
+.toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:25px 0}
+.search{width:min(100%,340px);background:#0c1225;border:1px solid var(--line);border-radius:12px;color:white;padding:12px 14px;outline:none}
+.search:focus{border-color:#7ae4ff99;box-shadow:0 0 0 3px #68dfff12}
+.filter{display:flex;gap:8px;flex-wrap:wrap}
+.filter button{padding:9px 13px;border-radius:10px;border:1px solid var(--line);background:#10172c;color:#b8c5e0;cursor:pointer;font-size:.8rem}
+.filter button.active{background:#243e78;color:white;border-color:#79b9ff70}
+.planet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.planet-card{border-radius:19px;padding:23px;min-height:260px;transition:transform .25s,border-color .25s;overflow:hidden;position:relative}
+.planet-card:hover{transform:translateY(-6px);border-color:#77dfff7a}
+.planet-art{width:84px;height:84px;border-radius:50%;margin:0 auto 20px;position:relative;box-shadow:inset -15px -12px 25px #0009,0 0 35px #7d9cff20}
+.earth{background:radial-gradient(circle at 28% 28%,#9af1ff,#2587d6 37%,#18407d 68%,#10132e)}
+.mars-art{background:radial-gradient(circle at 28% 25%,#ffcf9b,#df694b 42%,#852e3c 73%,#2a142b)}
+.jupiter{background:repeating-linear-gradient(0deg,#b76c53 0 8px,#f0c59a 8px 16px,#7e493f 16px 22px);border-radius:50%}
+.moon-art{background:radial-gradient(circle at 30% 27%,#fff,#a6b3cb 53%,#566078)}
+.saturn{background:radial-gradient(circle at 30% 25%,#f8e4ad,#c79b65 60%,#6b4a42)}
+.saturn:after{content:"";position:absolute;width:125px;height:35px;border:5px solid #e8d3a4b0;border-left-color:#ad8eae;border-right-color:#b9a0c7;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-22deg)}
+.planet-card h3{font-size:1.15rem;margin-bottom:6px}
+.planet-card p{font-size:.82rem;color:var(--muted);min-height:66px}
+.text-btn{background:none;border:0;color:var(--cyan);font-size:.82rem;font-weight:800;cursor:pointer;margin-top:15px}
+.text-btn:hover{color:white}
+.empty{grid-column:1/-1;padding:25px;text-align:center;color:var(--muted)}
+.mission-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+.feature-mission{border-radius:24px;min-height:350px;padding:32px;display:flex;flex-direction:column;justify-content:end;position:relative;overflow:hidden;background:radial-gradient(ellipse at 78% 20%,#b75e4b88,transparent 24%),radial-gradient(ellipse at 80% 45%,#7d394f,transparent 38%),linear-gradient(140deg,#111a38,#090d1c 70%);border:1px solid var(--line)}
+.feature-mission:before{content:"";position:absolute;width:270px;height:270px;right:-25px;top:20px;border-radius:50%;background:radial-gradient(circle at 28% 24%,#ffcb98,#e16c50 38%,#6a273e 72%,#21122d);box-shadow:inset -30px -22px 40px #0009,0 0 80px #d35b5033}
+.feature-mission>*{position:relative}
+.feature-mission .kicker{margin-bottom:12px}
+.feature-mission h3{font-size:2rem;max-width:390px;line-height:1.15;letter-spacing:-.04em}
+.feature-mission p{max-width:400px;color:#c0cbe2;margin-top:12px;font-size:.9rem}
+.mission-side{display:grid;gap:16px}
+.mission-item{border-radius:19px;padding:23px;display:flex;gap:17px;align-items:flex-start}
+.mission-icon{width:46px;height:46px;flex-shrink:0;display:grid;place-items:center;background:#263b6a;border:1px solid #7ca8ff3b;border-radius:14px;font-size:1.3rem}
+.mission-item h3{font-size:1rem;margin-bottom:5px}
+.mission-item p{color:var(--muted);font-size:.82rem}
+.quiz-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:35px;align-items:center}
+.quiz-intro p{color:var(--muted);margin-top:16px;max-width:390px}
+.quiz{border-radius:22px;padding:30px}
+.quiz-top{display:flex;justify-content:space-between;gap:12px;color:#aab9d8;font-size:.8rem;margin-bottom:22px}
+.quiz h3{font-size:1.3rem;line-height:1.4;margin-bottom:20px}
+.answers{display:grid;gap:10px}
+.answers button{padding:13px 15px;text-align:left;border-radius:12px;border:1px solid var(--line);background:#0c1429;cursor:pointer;transition:.2s}
+.answers button:hover:not(:disabled){border-color:#7be6ff;background:#142344}
+.answers button:disabled{cursor:default}
+.answers button.correct{border-color:#51e4ad;background:#0c352f}
+.answers button.wrong{border-color:#ff8399;background:#351925}
+.quiz-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px;color:var(--muted);font-size:.82rem}
+#quizFeedback{min-height:26px;margin-top:13px;font-size:.87rem;color:var(--cyan)}
+.callout{border-radius:24px;padding:38px;display:flex;justify-content:space-between;align-items:center;gap:25px;background:radial-gradient(ellipse at 90% 20%,#5543a544,transparent 40%),linear-gradient(110deg,#101a36,#0b1023);border:1px solid var(--line)}
+.callout p{color:var(--muted);margin-top:10px;max-width:580px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:#8292b3;font-size:.8rem}
+.footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{color:#aebfe0}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:70px}.hero-content{text-align:center}.hero-copy{margin:auto}.hero .actions,.hero-meta{justify-content:center}.visual{height:410px}.planet-grid{grid-template-columns:repeat(2,1fr)}.mission-layout,.quiz-wrap{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.feature-mission{min-height:330px}}
+@media(max-width:620px){header{height:68px}.navlinks{display:none;position:absolute;top:67px;left:0;right:0;padding:20px 5%;background:#080c1cf5;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start;gap:17px}.navlinks.open{display:flex}.menu-toggle{display:block}.nav-cta{display:none}.hero{min-height:auto;padding:65px 0 45px}.visual{height:330px;transform:scale(.85);margin:-5px -25px}.planet-main{width:190px;height:190px}.orbit.one{width:320px}.orbit.two{width:360px}.orbit.three{width:270px}.card-top{left:0}.section{padding:65px 0}.planet-grid{gap:10px}.planet-card{padding:17px;min-height:255px}.planet-art{width:67px;height:67px}.planet-card p{font-size:.78rem}.feature-mission{padding:24px;min-height:360px}.feature-mission:before{width:200px;height:200px;right:-55px;top:30px}.quiz{padding:22px}.callout{padding:26px;align-items:flex-start;flex-direction:column}.toolbar{align-items:stretch;flex-direction:column}.search{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+
+/* 3D solar system upgrade */
+.solar-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+.solar-stage{position:relative;min-height:490px;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);border-radius:24px;background:radial-gradient(circle at center,#12234b 0,#080d20 47%,#050711 75%)}
+.solar-stage:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,#fff9 0 1px,transparent 2px),radial-gradient(circle at 70% 32%,#8bdcffaa 0 1px,transparent 2px),radial-gradient(circle at 80% 76%,#fff9 0 1px,transparent 2px);pointer-events:none}
+.sun-core{position:absolute;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6b0,#ffb52e 45%,#e85b24 75%);box-shadow:0 0 25px #ffb52e,0 0 65px #ff8c2b99,0 0 110px #ff6a1f55;z-index:2}
+.solar-orbit{position:absolute;border:1px solid #9abaff35;border-radius:50%;transform:rotateX(68deg);transform-style:preserve-3d;animation:orbit-spin linear infinite}
+.solar-orbit .orbiter{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 0 13px #8acaff66}
+.orbit-mercury{width:115px;height:115px;animation-duration:7s}.orbit-mercury .orbiter{width:8px;height:8px;background:#aaa}
+.orbit-venus{width:165px;height:165px;animation-duration:11s}.orbit-venus .orbiter{width:12px;height:12px;background:#d9a56f}
+.orbit-earth{width:225px;height:225px;animation-duration:16s}.orbit-earth .orbiter{width:14px;height:14px;background:#3e9bff;box-shadow:0 0 18px #399bff}
+.orbit-mars{width:290px;height:290px;animation-duration:22s}.orbit-mars .orbiter{width:11px;height:11px;background:#e76b4d}
+.orbit-jupiter{width:370px;height:370px;animation-duration:32s}.orbit-jupiter .orbiter{width:22px;height:22px;background:linear-gradient(#e5bd91,#98674d,#e5bd91)}
+@keyframes orbit-spin{from{transform:rotateX(68deg) rotateZ(0deg)}to{transform:rotateX(68deg) rotateZ(360deg)}}
+.solar-controls{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}.solar-controls button{background:#101b35;border:1px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer}.solar-controls button.active,.solar-controls button:hover{border-color:var(--cyan);color:var(--cyan)}
+.solar-copy h3{font-size:1.8rem;margin:10px 0}.solar-copy p{color:var(--muted);line-height:1.8}.solar-note{font-size:.78rem;color:#8192b3;margin-top:16px}
+.live-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.live-card{padding:25px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#101a32cc,#090e1dcc);min-height:200px}.live-label{color:var(--cyan);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;font-weight:800}.live-value{font-size:clamp(1.45rem,3vw,2.1rem);font-weight:850;margin:12px 0;letter-spacing:-.04em}.live-desc{color:var(--muted);font-size:.9rem;line-height:1.7}.live-status{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;color:#9caccb;margin-top:16px}.live-status:before{content:"";width:7px;height:7px;background:#6bffcb;border-radius:50%;box-shadow:0 0 10px #6bffcb}.live-image{width:100%;height:170px;object-fit:cover;border-radius:12px;margin-top:12px;display:none}.refresh-live{margin-top:18px}
+@media(max-width:900px){.solar-layout{grid-template-columns:1fr}.solar-stage{min-height:430px}.live-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.solar-stage{min-height:340px}.orbit-jupiter{width:290px;height:290px}.orbit-mars{width:230px;height:230px}.orbit-earth{width:175px;height:175px}.orbit-venus{width:125px;height:125px}.orbit-mercury{width:85px;height:85px}.sun-core{width:55px;height:55px}.live-grid{grid-template-columns:1fr}.navlinks{max-height:75vh;overflow:auto}}
+@media(prefers-reduced-motion:reduce){.solar-orbit{animation:none!important}}
+
 </style>
 </head>
 <body>
+<canvas id="starfield" aria-hidden="true"></canvas>
 <header>
-<div class="nav">
-<a class="logo" href="#home">ORBIT <span>X</span></a>
-<nav>
-<a href="#home">Home</a><a href="#solar">Solar System</a><a href="#missions">Missions</a><a href="#live">Live Space</a><a href="#quiz">Quiz</a>
-</nav>
-</div>
+  <div class="wrap nav">
+    <a class="brand" href="#home" aria-label="ORBIT X home"><span class="brand-mark">✦</span> ORBIT X</a>
+    <nav class="navlinks" id="navlinks" aria-label="Main navigation">
+      <a href="#home">Home</a><a href="#universe">Universe</a><a href="#solar-system">3D Solar System</a><a href="#live-space">Live Space</a><a href="#missions">Missions</a><a href="#quiz">Space Quiz</a>
+    </nav>
+    <a class="nav-cta" href="#universe">Start Exploring ↗</a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+  </div>
 </header>
+<main id="home">
+  <section class="wrap hero">
+    <div class="hero-content reveal">
+      <div class="eyebrow"><span class="pulse"></span> A new perspective on the cosmos</div>
+      <h1>Look up.<br><span class="grad">Go beyond.</span></h1>
+      <p class="hero-copy">The universe is not the limit. It is the beginning. Explore extraordinary worlds, discover humanity’s next frontiers, and fuel your curiosity about what lies beyond Earth.</p>
+      <div class="actions"><a class="btn" href="#universe">Explore the universe <span aria-hidden="true">↗</span></a><a class="btn secondary" href="#missions">Discover missions</a></div>
+      <div class="hero-meta">
+        <div class="meta"><strong>8</strong><span>Planets in our solar system</span></div>
+        <div class="meta"><strong>∞</strong><span>Questions still to answer</span></div>
+        <div class="meta"><strong id="missionClock">00:00:00</strong><span>Time exploring ORBIT X</span></div>
+      </div>
+    </div>
+    <div class="visual reveal" aria-label="Illustration of a glowing blue planet surrounded by orbital rings">
+      <div class="orbit one"></div><div class="orbit two"></div><div class="orbit three"></div>
+      <div class="planet-main"></div><div class="mini-planet mars"></div><div class="mini-planet moon"></div>
+      <div class="float-card card-top"><small>Mission status</small><strong><span class="pulse" style="display:inline-block;margin-right:6px"></span> Curiosity: ACTIVE</strong></div>
+      <div class="float-card card-bottom"><small>Destination detected</small><strong>Sector · Andromeda</strong></div>
+    </div>
+  </section>
 
-<main class="wrap">
-<section class="hero" id="home">
-<div>
-<div class="eyebrow">✦ Your universe starts here</div>
-<h1>BEYOND<br>THE <span>KNOWN.</span></h1>
-<p class="lead">Explore distant worlds, discover real space missions, and follow humanity's journey into the cosmos. The universe is bigger than we imagine.</p>
-<div class="actions">
-<a class="btn primary" href="#solar">Explore the Solar System ↗</a>
-<a class="btn" href="#live">Discover Live Space</a>
-</div>
-<p class="small">SPACE EXPLORATION • SCIENCE • THE FUTURE</p>
-</div>
-<div class="hero-art" aria-label="Illustration of a glowing fictional planet">
-<div class="nebula"></div><div class="planet-big"></div>
-</div>
-</section>
+  <section class="section" id="universe">
+    <div class="wrap">
+      <div class="section-head reveal"><div><div class="kicker">01 / Choose your destination</div><h2>Worlds worth wondering about.</h2></div><p>From our home world to the giant planets, every destination has a story. Pick a world and begin your discovery.</p></div>
+      <div class="toolbar reveal">
+        <input class="search" id="planetSearch" type="search" placeholder="⌕  Search planets..." aria-label="Search planets">
+        <div class="filter" aria-label="Filter worlds"><button class="active" data-filter="all">All worlds</button><button data-filter="rocky">Rocky worlds</button><button data-filter="giant">Giant worlds</button></div>
+      </div>
+      <div class="planet-grid" id="planetGrid">
+        <article class="planet-card glass reveal" data-name="Earth" data-type="rocky" data-fact="Earth is the third planet from the Sun and the only world currently known to support life. Its liquid-water oceans cover about 71% of its surface.">
+          <div class="planet-art earth"></div><h3>Earth <span style="color:#7ae5ff;font-size:.7rem">01</span></h3><p>Our pale blue home, alive with oceans, clouds, and extraordinary diversity.</p><button class="text-btn" data-explore>Explore Earth ↗</button>
+        </article>
+        <article class="planet-card glass reveal" data-name="Mars" data-type="rocky" data-fact="Mars is the fourth planet from the Sun. Iron minerals in its dust give it a reddish colour, and robotic missions study whether it once had environments suitable for life.">
+          <div class="planet-art mars-art"></div><h3>Mars <span style="color:#7ae5ff;font-size:.7rem">02</span></h3><p>A rust-coloured desert with ancient river valleys and clues to its past.</p><button class="text-btn" data-explore>Explore Mars ↗</button>
+        </article>
+        <article class="planet-card glass reveal" data-name="Jupiter" data-type="giant" data-fact="Jupiter is the largest planet in the solar system. It is a gas giant with powerful storms, including the Great Red Spot, and many known moons.">
+          <div class="planet-art jupiter"></div><h3>Jupiter <span style="color:#7ae5ff;font-size:.7rem">03</span></h3><p>A colossal gas giant with immense storms and a fascinating family of moons.</p><button class="text-btn" data-explore>Explore Jupiter ↗</button>
+        </article>
+        <article class="planet-card glass reveal" data-name="Moon" data-type="rocky" data-fact="The Moon is Earth's natural satellite. Its surface preserves a record of impacts, and future missions aim to expand our understanding of how people can explore beyond Earth.">
+          <div class="planet-art moon-art"></div><h3>The Moon <span style="color:#7ae5ff;font-size:.7rem">04</span></h3><p>Our nearest celestial neighbour and a stepping stone for deep-space exploration.</p><button class="text-btn" data-explore>Explore the Moon ↗</button>
+        </article>
+        <article class="planet-card glass reveal" data-name="Saturn" data-type="giant" data-fact="Saturn is a gas giant best known for its spectacular rings, made mostly of countless pieces of ice and rocky material.">
+          <div class="planet-art saturn"></div><h3>Saturn <span style="color:#7ae5ff;font-size:.7rem">05</span></h3><p>A ringed giant whose bright rings span a vast distance around the planet.</p><button class="text-btn" data-explore>Explore Saturn ↗</button>
+        </article>
+      </div>
+      <p id="noResults" class="empty" hidden>No worlds match that search. Try another name.</p>
+    </div>
+  </section>
 
-<section id="solar">
-<div class="section-head">
-<div class="eyebrow">01 / Our cosmic neighbourhood</div>
-<h2>Meet the Solar System</h2>
-<p class="sub">Watch the planets orbit the Sun in this simplified animation. Select a planet to discover a few facts about it. Orbital sizes and speeds are illustrative, not to scale.</p>
-</div>
-<div class="solar-panel">
-<div class="solar-system" aria-label="Animated illustrative solar system">
-<div class="sun" title="Sun"></div>
-<div class="orbit o1"><span class="orbital-body"></span></div>
-<div class="orbit o2"><span class="orbital-body"></span></div>
-<div class="orbit o3"><span class="orbital-body"></span></div>
-<div class="orbit o4"><span class="orbital-body"></span></div>
-<div class="orbit o5"><span class="orbital-body"></span></div>
-<div class="orbit o6"><span class="orbital-body"></span></div>
-</div>
-<div class="small">☀ Sun in the centre · Animated planetary orbits</div>
-</div>
-<div class="planet-buttons" id="planetButtons"></div>
-<div class="info-box" id="planetInfo" aria-live="polite"></div>
-</section>
 
-<section id="missions">
-<div class="section-head">
-<div class="eyebrow">02 / Humanity reaches outward</div>
-<h2>Big ideas. Bold missions.</h2>
-<p class="sub">From robotic explorers to future human journeys, space missions help us understand our place in the universe.</p>
-</div>
-<div class="grid">
-<article class="card"><span class="planet-icon">🔴</span><span class="tag">MARS</span><h3>Search for Ancient Life</h3><p>Mars rovers study rocks, ancient environments, and whether the planet could once have supported microbial life.</p></article>
-<article class="card"><span class="planet-icon">🌕</span><span class="tag">THE MOON</span><h3>Return to the Moon</h3><p>NASA's Artemis programme aims to return astronauts to the lunar surface and build experience for future exploration.</p></article>
-<article class="card"><span class="planet-icon">🛰️</span><span class="tag">DEEP SPACE</span><h3>Explore the Unknown</h3><p>Space telescopes and robotic spacecraft reveal distant galaxies, exoplanets, and worlds beyond our neighbourhood.</p></article>
-</div>
-</section>
+  <section class="section" id="solar-system">
+    <div class="wrap">
+      <div class="section-head reveal"><div><div class="kicker">02 / A little cosmic mechanics</div><h2>Meet our solar system.</h2></div><p>Watch the planets travel around the Sun in this stylised, animated model. Distances and sizes are not to scale.</p></div>
+      <div class="solar-layout">
+        <div class="solar-stage reveal" aria-label="Animated stylised solar system with planets orbiting the Sun">
+          <div class="sun-core" title="Sun"></div>
+          <div class="solar-orbit orbit-mercury"><span class="orbiter"></span></div>
+          <div class="solar-orbit orbit-venus"><span class="orbiter"></span></div>
+          <div class="solar-orbit orbit-earth"><span class="orbiter"></span></div>
+          <div class="solar-orbit orbit-mars"><span class="orbiter"></span></div>
+          <div class="solar-orbit orbit-jupiter"><span class="orbiter"></span></div>
+        </div>
+        <div class="solar-copy reveal">
+          <div class="kicker">SELECT A WORLD</div><h3 id="solarName">Earth</h3>
+          <p id="solarFact">Earth is the third planet from the Sun and the only world currently known to support life.</p>
+          <div class="solar-controls" id="solarControls">
+            <button data-world="Mercury">Mercury</button><button data-world="Venus">Venus</button><button data-world="Earth" class="active">Earth</button><button data-world="Mars">Mars</button><button data-world="Jupiter">Jupiter</button>
+          </div>
+          <p class="solar-note">This is a CSS animation for learning and illustration, not a scientifically scaled or real-time orbital simulator.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section id="live">
-<div class="section-head">
-<div class="eyebrow">03 / Space beyond your screen</div>
-<h2>Live Space Desk</h2>
-<p class="sub">These cards request data from public services when available. Internet access and service availability are required.</p>
-</div>
-<div class="live-grid">
-<article class="card">
-<span class="planet-icon">🛰️</span><h3>International Space Station</h3>
-<p>Follow the ISS position reported by a public tracking service.</p>
-<div class="info-box">
-<div class="small">LATITUDE</div><div class="stat" id="lat">Loading…</div>
-<div class="small">LONGITUDE</div><div class="stat" id="lon">Loading…</div>
-<p class="small" id="issTime">Connecting to tracking service…</p>
-</div>
-<button class="btn" id="refreshISS" style="margin-top:14px">Refresh position ↻</button>
-<p class="small">Position is approximate. This is not a live map or a spacecraft control system.</p>
-</article>
-<article class="card">
-<span class="planet-icon">🔭</span><h3>NASA Picture of the Day</h3>
-<p id="apodDate" class="small">Fetching astronomy feature…</p>
-<img id="apodImage" class="apod-image" alt="NASA astronomy picture of the day" hidden>
-<h3 id="apodTitle">Loading the universe…</h3>
-<p id="apodText">Requesting today's astronomy feature.</p>
-<a id="apodLink" class="btn" href="https://apod.nasa.gov/apod/astropix.html" target="_blank" rel="noopener noreferrer">Open NASA APOD ↗</a>
-</article>
-</div>
-</section>
+  <section class="section" id="live-space">
+    <div class="wrap">
+      <div class="section-head reveal"><div><div class="kicker">03 / Connected to the cosmos</div><h2>Live space desk.</h2></div><p>Fetch current information from public space data services. Internet access is needed; if a service is unavailable, the page will tell you.</p></div>
+      <div class="live-grid">
+        <article class="live-card reveal"><div class="live-label">International Space Station</div><div class="live-value" id="issPosition">Loading…</div><p class="live-desc" id="issDescription">Requesting the latest reported ISS coordinates.</p><div class="live-status" id="issStatus">Connecting to ISS data</div></article>
+        <article class="live-card reveal"><div class="live-label">Astronomy picture of the day</div><div class="live-value" id="apodTitle">Loading today's feature…</div><p class="live-desc" id="apodDescription">Fetching NASA's astronomy picture information.</p><img id="apodImage" class="live-image" alt="NASA astronomy picture of the day"><div class="live-status" id="apodStatus">Connecting to NASA APOD</div><p style="margin-top:10px"><a id="apodLink" class="text-btn" href="https://apod.nasa.gov/apod/astropix.html" target="_blank" rel="noopener noreferrer">Open NASA APOD ↗</a></p></article>
+      </div>
+      <button class="btn refresh-live" id="refreshLive">↻ Refresh live information</button>
+      <p class="solar-note">Live data comes from third-party public APIs. Availability, update frequency, and image loading depend on those services and your connection.</p>
+    </div>
+  </section>
 
-<section id="quiz">
-<div class="section-head">
-<div class="eyebrow">04 / Test your cosmic knowledge</div>
-<h2>Mission: Brainpower</h2>
-<p class="sub">Answer the question. Every great explorer starts with curiosity!</p>
-</div>
-<div class="card">
-<div class="tag" id="quizCount">QUESTION 1 OF 5</div>
-<h3 id="question">Which planet is known as the Red Planet?</h3>
-<div class="quiz-options" id="options"></div>
-<p id="quizFeedback" aria-live="polite"></p>
-<div class="actions"><button class="btn primary" id="nextQuestion">Next question →</button><span class="small" id="score">Score: 0</span></div>
-</div>
-</section>
+  <section class="section" id="missions">
+    <div class="wrap">
+      <div class="section-head reveal"><div><div class="kicker">04 / Humanity's next chapter</div><h2>Our next giant leap.</h2></div><p>Space exploration is a journey of science, engineering, teamwork, and bold questions.</p></div>
+      <div class="mission-layout">
+        <article class="feature-mission reveal"><div class="kicker">Featured frontier · Mars</div><h3>Could humans one day call another world home?</h3><p>Before a crewed Mars mission becomes reality, scientists and engineers must solve challenges involving radiation, life support, energy, food, and safe landing.</p><div style="margin-top:22px"><a class="btn" href="https://science.nasa.gov/mars/" target="_blank" rel="noopener noreferrer">Explore NASA's Mars guide ↗</a></div></article>
+        <div class="mission-side">
+          <article class="mission-item glass reveal"><div class="mission-icon">🌕</div><div><h3>Return to the Moon</h3><p>Study lunar terrain and test technologies that could support future exploration.</p></div></article>
+          <article class="mission-item glass reveal"><div class="mission-icon">🔭</div><div><h3>Look deeper into space</h3><p>Space telescopes investigate distant galaxies, exoplanets, and the early universe.</p></div></article>
+          <article class="mission-item glass reveal"><div class="mission-icon">🛰️</div><div><h3>Robots as pioneers</h3><p>Rovers and spacecraft explore places that are difficult or dangerous for humans to reach.</p></div></article>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section>
-<div class="card" style="text-align:center;padding:35px">
-<div class="eyebrow">LOOK UP. THINK BIG.</div>
-<h2>Somewhere, a new discovery awaits.</h2>
-<p class="sub" style="margin:12px auto">Space exploration begins with a question. Keep learning, keep building, and never stop looking beyond the horizon.</p>
-<a class="btn primary" href="#home">Return to orbit ↑</a>
-</div>
-</section>
+  <section class="section" id="quiz">
+    <div class="wrap quiz-wrap">
+      <div class="quiz-intro reveal"><div class="kicker">05 / Explorer training</div><h2>Curiosity is your superpower.</h2><p>Take the ORBIT X challenge. Answer three quick questions, test your space knowledge, and see your final score.</p></div>
+      <div class="quiz glass reveal">
+        <div class="quiz-top"><span id="questionCount">QUESTION 1 / 3</span><span>✦ SCORE: <strong id="score">0</strong></span></div>
+        <h3 id="question">Which planet is known as the Red Planet?</h3>
+        <div class="answers" id="answers">
+          <button data-answer="0">A. Venus</button><button data-answer="1">B. Mars</button><button data-answer="2">C. Jupiter</button><button data-answer="3">D. Neptune</button>
+        </div>
+        <p id="quizFeedback" aria-live="polite"></p>
+        <div class="quiz-bottom"><span id="quizHint">Choose your answer to continue.</span><button class="btn" id="nextQuestion" hidden>Next question →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:15px">
+    <div class="wrap callout reveal"><div><div class="kicker">Your mission starts here</div><h2>Stay curious. Think cosmic.</h2><p>Every great discovery starts with a question. Keep exploring, keep learning, and remember: the future is built by curious minds.</p></div><a class="btn" href="#home">Return to orbit ↑</a></div>
+  </section>
 </main>
-
-<footer>
-<div class="wrap">
-<strong>ORBIT X</strong> — Beyond the Known 🌌<br>
-Educational space-exploration website. Not affiliated with NASA or any space agency.<br>
-NASA APOD: <a href="https://apod.nasa.gov/apod/astropix.html" target="_blank" rel="noopener noreferrer">Official website</a> ·
-ISS tracking: public data service
-<p>Made for curious minds | © <span id="year"></span> ORBIT X</p>
-</div>
-</footer>
-
+<footer><div class="wrap footer-inner"><a class="brand" href="#home"><span class="brand-mark">✦</span> ORBIT X</a><span>Made for curious minds · Educational space project</span><span>Space facts are educational summaries; mission plans can change.</span></div></footer>
 <script>
-const starCount=100;
-for(let i=0;i<starCount;i++){
- const s=document.createElement('i');
- s.className='star';
- s.style.left=Math.random()*100+'%';
- s.style.top=Math.random()*100+'%';
- s.style.opacity=(.25+Math.random()*.75).toFixed(2);
- s.style.animationDelay=(Math.random()*4)+'s';
- document.body.appendChild(s);
-}
-
-const planets=[
-{name:'Mercury',emoji:'☄️',type:'Rocky planet',fact:'The smallest planet and the closest to the Sun. A year on Mercury lasts only 88 Earth days.'},
-{name:'Venus',emoji:'🟡',type:'Rocky planet',fact:'Venus has a thick atmosphere and is the hottest planet in our solar system.'},
-{name:'Earth',emoji:'🌍',type:'Our home',fact:'Earth is the only world currently known to support life. Liquid water covers most of its surface.'},
-{name:'Mars',emoji:'🔴',type:'Rocky planet',fact:'Iron-rich dust gives Mars its red colour. Robotic explorers investigate its ancient landscapes.'},
-{name:'Jupiter',emoji:'🟠',type:'Gas giant',fact:'Jupiter is the largest planet. Its Great Red Spot is a giant storm that has lasted for centuries.'},
-{name:'Saturn',emoji:'🪐',type:'Gas giant',fact:'Saturn is famous for its spectacular rings, made mostly of ice and rocky debris.'},
-{name:'Uranus',emoji:'🔵',type:'Ice giant',fact:'Uranus rotates on its side compared with most planets, giving it unusual seasons.'},
-{name:'Neptune',emoji:'🔷',type:'Ice giant',fact:'Neptune is very far from the Sun and has some of the fastest winds measured on a planet.'}
-];
-const buttons=document.getElementById('planetButtons');
-const planetInfo=document.getElementById('planetInfo');
-planets.forEach((p,i)=>{
- const b=document.createElement('button');
- b.textContent=p.emoji+' '+p.name;
- b.addEventListener('click',()=>{
-  buttons.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  planetInfo.innerHTML='<span class="tag">'+p.type+'</span><h3>'+p.emoji+' '+p.name+'</h3><p>'+p.fact+'</p>';
- });
- buttons.appendChild(b);
- if(i===2)b.click();
+/* Mobile navigation */
+const menuToggle = document.getElementById('menuToggle');
+const navlinks = document.getElementById('navlinks');
+menuToggle.addEventListener('click', () => {
+  const open = navlinks.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', String(open));
 });
+navlinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+  navlinks.classList.remove('open');
+  menuToggle.setAttribute('aria-expanded', 'false');
+}));
 
-async function loadISS(){
- const lat=document.getElementById('lat');
- const lon=document.getElementById('lon');
- const time=document.getElementById('issTime');
- lat.textContent='Loading…';lon.textContent='Loading…';
- time.textContent='Contacting public tracking service…';
- try{
-  const r=await fetch('https://api.wheretheiss.at/v1/satellites/25544');
-  if(!r.ok)throw new Error('Tracking service unavailable');
-  const d=await r.json();
-  lat.textContent=Number(d.latitude).toFixed(3)+'°';
-  lon.textContent=Number(d.longitude).toFixed(3)+'°';
-  time.textContent='Updated: '+new Date().toLocaleTimeString()+' · Refresh for a new position.';
- }catch(e){
-  lat.textContent='Unavailable';lon.textContent='Unavailable';
-  time.textContent='Could not load ISS data. Check your internet connection and try again.';
- }
+/* Animated starfield */
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let width = 0, height = 0, dpr = 1;
+function resizeCanvas() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  width = window.innerWidth; height = window.innerHeight;
+  canvas.width = Math.floor(width * dpr); canvas.height = Math.floor(height * dpr);
+  canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  stars = Array.from({length: Math.min(180, Math.floor(width * height / 6500))}, () => ({
+    x: Math.random() * width, y: Math.random() * height,
+    r: Math.random() * 1.3 + .25, speed: Math.random() * .22 + .035,
+    alpha: Math.random() * .65 + .2
+  }));
 }
-document.getElementById('refreshISS').addEventListener('click',loadISS);
-loadISS();
-
-async function loadAPOD(){
- const title=document.getElementById('apodTitle');
- const desc=document.getElementById('apodText');
- const date=document.getElementById('apodDate');
- const img=document.getElementById('apodImage');
- const link=document.getElementById('apodLink');
- try{
-  const r=await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY');
-  if(!r.ok)throw new Error('NASA service unavailable');
-  const d=await r.json();
-  title.textContent=d.title||'Astronomy Picture of the Day';
-  date.textContent=d.date||'NASA astronomy feature';
-  desc.textContent=d.explanation||'Explore today's astronomy feature on NASA.';
-  if(d.media_type==='image'&&d.url){
-   img.src=d.url;img.hidden=false;img.alt=d.title||'NASA astronomy picture';
-  }else{
-   img.hidden=true;
-   desc.textContent=(d.explanation||'')+' This feature is not a still image. Open NASA APOD to view it.';
+function drawStars() {
+  ctx.clearRect(0, 0, width, height);
+  for (const s of stars) {
+    ctx.beginPath(); ctx.fillStyle = `rgba(183,216,255,${s.alpha})`;
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+    s.y -= s.speed;
+    if (s.y < -2) { s.y = height + 2; s.x = Math.random() * width; }
   }
-  link.href=d.hdurl||d.url||'https://apod.nasa.gov/apod/astropix.html';
- }catch(e){
-  title.textContent='Explore NASA Astronomy Picture of the Day';
-  date.textContent='Live content unavailable right now';
-  desc.textContent='The NASA service could not be reached. You can still explore the official astronomy picture archive using the button below.';
- }
+  requestAnimationFrame(drawStars);
 }
-loadAPOD();
-document.getElementById('year').textContent=new Date().getFullYear();
+resizeCanvas(); drawStars();
+window.addEventListener('resize', resizeCanvas);
 
-const questions=[
-{q:'Which planet is known as the Red Planet?',a:['Venus','Mars','Neptune','Mercury'],correct:1,why:'Iron-rich dust gives Mars its reddish appearance.'},
-{q:'Which star is closest to Earth?',a:['Sirius','Polaris','The Sun','Vega'],correct:2,why:'The Sun is our nearest star.'},
-{q:'Which planet has the most prominent ring system?',a:['Saturn','Earth','Mars','Mercury'],correct:0,why:'Saturn is famous for its large, bright rings.'},
-{q:'What does ISS stand for?',a:['International Space Station','Interstellar Science Signal','International Star Survey','Inner Solar Satellite'],correct:0,why:'ISS means International Space Station.'},
-{q:'Which galaxy contains our solar system?',a:['Andromeda','Whirlpool','Milky Way','Sombrero'],correct:2,why:'Our solar system is located in the Milky Way galaxy.'}
-];
-let qi=0,score=0,answered=false;
-const q=document.getElementById('question'),opts=document.getElementById('options');
-const feedback=document.getElementById('quizFeedback');
-function renderQuestion(){
- const item=questions[qi];answered=false;
- document.getElementById('quizCount').textContent='QUESTION '+(qi+1)+' OF '+questions.length;
- q.textContent=item.q;opts.innerHTML='';feedback.textContent='';
- item.a.forEach((answer,i)=>{
-  const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+'. '+answer;
-  b.addEventListener('click',()=>{
-   if(answered)return;answered=true;
-   if(i===item.correct){score++;feedback.textContent='Correct! '+item.why;}
-   else feedback.textContent='Not quite. '+item.why;
-   document.getElementById('score').textContent='Score: '+score;
-   Array.from(opts.children).forEach((button,j)=>{button.disabled=true;if(j===item.correct)button.style.borderColor='#63e9ff';});
+/* Reveal sections as they enter the screen */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
   });
-  opts.appendChild(b);
- });
- document.getElementById('nextQuestion').textContent=qi===questions.length-1?'Play again ↻':'Next question →';
+}, {threshold: .12});
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* Planet search and category filters */
+const search = document.getElementById('planetSearch');
+const planetCards = [...document.querySelectorAll('.planet-card')];
+const filterButtons = [...document.querySelectorAll('[data-filter]')];
+let activeFilter = 'all';
+function filterPlanets() {
+  const term = search.value.trim().toLowerCase();
+  let shown = 0;
+  planetCards.forEach(card => {
+    const matchesName = card.dataset.name.toLowerCase().includes(term) ||
+      card.querySelector('p').textContent.toLowerCase().includes(term);
+    const matchesType = activeFilter === 'all' || card.dataset.type === activeFilter;
+    const visible = matchesName && matchesType;
+    card.hidden = !visible;
+    if (visible) shown++;
+  });
+  document.getElementById('noResults').hidden = shown !== 0;
 }
-document.getElementById('nextQuestion').addEventListener('click',()=>{
- if(qi===questions.length-1){
-  qi=0;score=0;document.getElementById('score').textContent='Score: 0';
- }else qi++;
- renderQuestion();
+search.addEventListener('input', filterPlanets);
+filterButtons.forEach(button => button.addEventListener('click', () => {
+  activeFilter = button.dataset.filter;
+  filterButtons.forEach(b => b.classList.toggle('active', b === button));
+  filterPlanets();
+}));
+document.querySelectorAll('[data-explore]').forEach(button => button.addEventListener('click', () => {
+  const card = button.closest('.planet-card');
+  alert(card.dataset.name + '\\n\\n' + card.dataset.fact);
+}));
+
+/* Simple elapsed exploration clock (session only) */
+const startedAt = Date.now();
+function updateClock() {
+  const seconds = Math.floor((Date.now() - startedAt) / 1000);
+  const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+  const m = String(Math.floor(seconds % 3600 / 60)).padStart(2, '0');
+  const s = String(seconds % 60).padStart(2, '0');
+  document.getElementById('missionClock').textContent = `${h}:${m}:${s}`;
+}
+updateClock(); setInterval(updateClock, 1000);
+
+/* Three-question quiz */
+const questions = [
+  {q:'Which planet is known as the Red Planet?', options:['Venus','Mars','Jupiter','Neptune'], correct:1, why:'Mars looks reddish because iron minerals in its dust have oxidised.'},
+  {q:'Which is the largest planet in our solar system?', options:['Earth','Saturn','Jupiter','Mercury'], correct:2, why:'Jupiter is the largest planet in our solar system.'},
+  {q:'What do we call a natural object that orbits a planet?', options:['Satellite','Comet tail','Constellation','Nebula'], correct:0, why:'A natural satellite, such as our Moon, orbits a planet.'}
+];
+let questionIndex = 0, score = 0, answered = false;
+const questionEl = document.getElementById('question');
+const answersEl = document.getElementById('answers');
+const feedbackEl = document.getElementById('quizFeedback');
+const nextButton = document.getElementById('nextQuestion');
+function renderQuestion() {
+  const q = questions[questionIndex];
+  answered = false;
+  document.getElementById('questionCount').textContent = `QUESTION ${questionIndex + 1} / ${questions.length}`;
+  questionEl.textContent = q.q;
+  feedbackEl.textContent = '';
+  document.getElementById('quizHint').textContent = 'Choose your answer to continue.';
+  nextButton.hidden = true;
+  answersEl.innerHTML = '';
+  q.options.forEach((option, index) => {
+    const button = document.createElement('button');
+    button.textContent = String.fromCharCode(65 + index) + '. ' + option;
+    button.dataset.answer = index;
+    button.addEventListener('click', () => chooseAnswer(index));
+    answersEl.appendChild(button);
+  });
+}
+function chooseAnswer(index) {
+  if (answered) return;
+  answered = true;
+  const q = questions[questionIndex];
+  [...answersEl.children].forEach((button, i) => {
+    button.disabled = true;
+    if (i === q.correct) button.classList.add('correct');
+    if (i === index && i !== q.correct) button.classList.add('wrong');
+  });
+  if (index === q.correct) { score++; document.getElementById('score').textContent = score; feedbackEl.textContent = '✓ Correct! ' + q.why; }
+  else feedbackEl.textContent = 'Not quite. ' + q.why;
+  document.getElementById('quizHint').textContent = questionIndex === questions.length - 1 ? 'Challenge complete.' : 'Ready for the next one?';
+  nextButton.textContent = questionIndex === questions.length - 1 ? 'Try again ↻' : 'Next question →';
+  nextButton.hidden = false;
+}
+nextButton.addEventListener('click', () => {
+  if (questionIndex === questions.length - 1) {
+    questionIndex = 0; score = 0; document.getElementById('score').textContent = '0';
+  } else questionIndex++;
+  renderQuestion();
 });
 renderQuestion();
+
+
+/* Interactive solar system planet selector */
+const solarFacts = {
+ Mercury:'Mercury is the smallest planet and the closest planet to the Sun. It has a heavily cratered surface and extreme temperature changes.',
+ Venus:'Venus is the second planet from the Sun. Its thick atmosphere traps heat, making it the hottest planet in our solar system.',
+ Earth:'Earth is the third planet from the Sun and the only world currently known to support life.',
+ Mars:'Mars is the fourth planet from the Sun. Iron-rich dust gives it a reddish colour, and robotic missions investigate its ancient environments.',
+ Jupiter:'Jupiter is the largest planet in our solar system, a gas giant with powerful storms and many moons.'
+};
+document.querySelectorAll('[data-world]').forEach(button => button.addEventListener('click', () => {
+  const name = button.dataset.world;
+  document.getElementById('solarName').textContent = name;
+  document.getElementById('solarFact').textContent = solarFacts[name];
+  document.querySelectorAll('[data-world]').forEach(b => b.classList.toggle('active', b === button));
+}));
+
+/* Live space information: ISS location and NASA Astronomy Picture of the Day */
+async function loadISS() {
+  const position = document.getElementById('issPosition');
+  const description = document.getElementById('issDescription');
+  const status = document.getElementById('issStatus');
+  status.textContent = 'Updating…';
+  try {
+    const response = await fetch('https://api.wheretheiss.at/v1/satellites/25544', {cache:'no-store'});
+    if (!response.ok) throw new Error('ISS service unavailable');
+    const data = await response.json();
+    position.textContent = Number(data.latitude).toFixed(2) + '°, ' + Number(data.longitude).toFixed(2) + '°';
+    description.textContent = 'Latest reported latitude and longitude of the International Space Station. Altitude: ' + Math.round(data.altitude).toLocaleString() + ' km.';
+    status.textContent = 'Coordinates received · ' + new Date().toLocaleTimeString();
+  } catch (error) {
+    position.textContent = 'Currently unavailable';
+    description.textContent = 'The ISS data service could not be reached. Check your connection or try refreshing in a moment.';
+    status.textContent = 'Live feed unavailable';
+  }
+}
+async function loadAPOD() {
+  const title = document.getElementById('apodTitle');
+  const description = document.getElementById('apodDescription');
+  const image = document.getElementById('apodImage');
+  const link = document.getElementById('apodLink');
+  const status = document.getElementById('apodStatus');
+  status.textContent = 'Updating…';
+  try {
+    const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY', {cache:'no-store'});
+    if (!response.ok) throw new Error('NASA APOD service unavailable');
+    const data = await response.json();
+    title.textContent = data.title || 'NASA Astronomy Picture of the Day';
+    description.textContent = (data.date ? data.date + ' · ' : '') + (data.explanation || 'Explore NASA’s astronomy feature of the day.');
+    link.href = data.url || 'https://apod.nasa.gov/apod/astropix.html';
+    if (data.media_type === 'image' && data.url) { image.src = data.url; image.style.display = 'block'; }
+    else { image.style.display = 'none'; }
+    status.textContent = 'NASA APOD data received';
+  } catch (error) {
+    title.textContent = 'NASA picture of the day';
+    description.textContent = 'The live NASA feed could not be loaded just now. Open NASA’s official APOD page to see the latest feature.';
+    image.style.display = 'none';
+    link.href = 'https://apod.nasa.gov/apod/astropix.html';
+    status.textContent = 'Live feed unavailable';
+  }
+}
+function refreshLiveSpace() { loadISS(); loadAPOD(); }
+document.getElementById('refreshLive').addEventListener('click', refreshLiveSpace);
+refreshLiveSpace();
+setInterval(loadISS, 60000);
+
 </script>
 </body>
 </html>
